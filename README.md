@@ -41,6 +41,14 @@ npm run preview
 npm run deploy
 ```
 
-In Cloudflare, create a Workers project and connect this GitHub repository. Use `main` as the production branch and `npm run deploy` as the deploy command. Custom domains are configured from the Cloudflare Workers dashboard.
+For Cloudflare Workers Builds, use these settings:
+
+```text
+Production branch: main
+Build command: npm run cf-build
+Deploy command: npx wrangler deploy
+```
+
+Do not use `npm run build` as the Cloudflare build command: it creates the normal `.next` output but does not create the `.open-next` bundle required by Workers. Custom domains are configured from the Cloudflare Workers dashboard.
 
 # edgecipline-founders
