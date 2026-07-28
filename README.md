@@ -32,14 +32,15 @@ If the photo files are not present, the page intentionally falls back to a restr
 
 ## Cloudflare deployment
 
-This project is configured for Cloudflare Pages using Next.js static export.
+This project is configured for Cloudflare Workers using the OpenNext adapter for Next.js.
 
 ```bash
 npm install
 npm run build
-npx wrangler pages dev out
+npm run preview
+npm run deploy
 ```
 
-In Cloudflare, create a Pages project and connect this GitHub repository. Use `main` as the production branch, `npx next build` as the build command, and `out` as the build directory. Custom domains are configured from the Cloudflare Pages dashboard.
+In Cloudflare, create a Workers project and connect this GitHub repository. Use `main` as the production branch and `npm run deploy` as the deploy command. Custom domains are configured from the Cloudflare Workers dashboard.
 
 # edgecipline-founders

@@ -12,6 +12,8 @@
   --ink: #f5f6f9;
   --muted: #9aa3b2;
   --faint: #656d7c;
+  --font-display: "Space Grotesk";
+  --font-body: "Inter";
 
   /* Iridescent liquid-glass accents */
   --gold: #e8b45c;
