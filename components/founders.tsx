@@ -2,9 +2,25 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, GraduationCap, Linkedin, Mail, MapPin, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { EducationItem, ExperienceItem, Founder } from "@/data/founders";
 
+/* Scroll-reveal wrapper — fades/rises content in as it enters the viewport.
+   Runs once, on the real browser; used across the sections below the hero. */
+const EASE = [0.22, 1, 0.36, 1] as const;
+function Reveal({ children, className, delay = 0, y = 30 }: { children: ReactNode; className?: string; delay?: number; y?: number }) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.65, ease: EASE, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -364,21 +380,34 @@ export function FounderComparison({ founders }: { founders: Founder[] }) {
     <section id="compare" className="scene scroll-mt-24 overflow-hidden border-y border-[var(--line)] bg-[var(--bg-soft)] py-24 sm:py-32">
       <div className="blob blob-iris drift" style={{ width: 340, height: 340, top: "10%", left: "40%" }} />
       <div className="page-shell relative">
-        <div className="mx-auto mb-14 max-w-2xl text-center">
+        <Reveal className="mx-auto mb-14 max-w-2xl text-center">
           <span className="eyebrow mb-5 inline-flex">At a glance</span>
           <h2 className="display-font text-4xl font-bold leading-[1.04] sm:text-5xl">Complementary Professional Backgrounds</h2>
-        </div>
+        </Reveal>
 
         <div className="relative grid gap-4 md:grid-cols-2 md:gap-0">
           {/* center divider node */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, ease: EASE, delay: 0.25 }}
+            className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 md:block"
+          >
             <div className="iri flex h-14 w-14 items-center justify-center rounded-full">
               <Plus size={20} className="text-[var(--gold)]" />
             </div>
-          </div>
+          </motion.div>
 
           {founders.map((founder, i) => (
-            <div key={founder.id} className={`glass card-hover p-8 sm:p-10 ${i === 0 ? "rounded-3xl md:rounded-r-none md:border-r-0" : "rounded-3xl md:rounded-l-none"}`}>
+            <motion.div
+              key={founder.id}
+              initial={{ opacity: 0, x: i === 0 ? -36 : 36, y: 20 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.65, ease: EASE, delay: i * 0.12 }}
+              className={`glass card-hover p-8 sm:p-10 ${i === 0 ? "rounded-3xl md:rounded-r-none md:border-r-0" : "rounded-3xl md:rounded-l-none"}`}
+            >
               <p className={`text-xs font-semibold uppercase tracking-[0.14em] text-[var(--gold)] ${i === 1 ? "md:text-right" : ""}`}>{founder.name}</p>
               <ul className="mt-6 space-y-3.5">
                 {lists[founder.id].map((item) => (
@@ -388,15 +417,17 @@ export function FounderComparison({ founders }: { founders: Founder[] }) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <p className="mx-auto mt-10 max-w-2xl text-center text-lg leading-8 text-[var(--muted)]">
-          Together, Sourav and Munavvir combine technical capability, business education, operational experience and
-          people management. Their backgrounds provide Edgecipline with balanced leadership across product development
-          and company execution.
-        </p>
+        <Reveal delay={0.15}>
+          <p className="mx-auto mt-10 max-w-2xl text-center text-lg leading-8 text-[var(--muted)]">
+            Together, Sourav and Munavvir combine technical capability, business education, operational experience and
+            people management. Their backgrounds provide Edgecipline with balanced leadership across product development
+            and company execution.
+          </p>
+        </Reveal>
       </div>
     </section>
   );
@@ -412,24 +443,28 @@ export function ProfessionalHighlights() {
   ] as const;
   return (
     <section id="highlights" className="page-shell scene scroll-mt-24 py-24 sm:py-32">
-      <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
+      <Reveal className="mb-14 flex flex-wrap items-end justify-between gap-6">
         <div>
           <span className="eyebrow mb-4 flex">Professional highlights</span>
           <h2 className="display-font text-4xl font-bold sm:text-6xl">What they bring</h2>
         </div>
         <div className="hidden h-px w-1/4 bg-gradient-to-r from-[var(--gold)] to-transparent sm:block" />
-      </div>
+      </Reveal>
       <div className="grid gap-4 lg:grid-cols-6">
-        {cards.map(([number, title, description, span]) => (
-          <div
+        {cards.map(([number, title, description, span], idx) => (
+          <motion.div
             key={number}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: EASE, delay: idx * 0.09 }}
             className={`iri group relative overflow-hidden rounded-3xl p-8 card-hover sm:p-10 ${span}`}
           >
             <span className="display-font text-sm font-bold tracking-[0.16em] gold-text">{number}</span>
             <h3 className="display-font mt-12 max-w-md text-2xl font-semibold leading-tight text-white sm:text-3xl">{title}</h3>
             <p className="mt-4 max-w-md text-sm leading-6 text-[var(--muted)]">{description}</p>
             <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(232,180,92,0.18),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
@@ -443,7 +478,7 @@ export function FounderContact({ founders }: { founders: Founder[] }) {
       <div className="grid-bg absolute inset-0 opacity-60" />
       <div className="blob blob-gold drift" style={{ width: 380, height: 380, top: "-8%", right: "6%" }} />
       <div className="page-shell relative grid gap-14 lg:grid-cols-2 lg:items-end">
-        <div>
+        <Reveal>
           <span className="eyebrow flex">Open a conversation</span>
           <h2 className="display-font mt-6 max-w-xl text-5xl font-bold leading-[0.98] sm:text-7xl">
             Connect with <span className="gold-text">the Founders</span>
@@ -451,10 +486,17 @@ export function FounderContact({ founders }: { founders: Founder[] }) {
           <p className="mt-8 max-w-md text-base leading-7 text-[var(--muted)]">
             For investor and professional enquiries, reach out directly to the people shaping Edgecipline.
           </p>
-        </div>
+        </Reveal>
         <div className="grid gap-4 sm:grid-cols-2">
-          {founders.map((founder) => (
-            <div className="iri rounded-3xl p-7 card-hover" key={founder.id}>
+          {founders.map((founder, i) => (
+            <motion.div
+              key={founder.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, ease: EASE, delay: i * 0.12 }}
+              className="iri rounded-3xl p-7 card-hover"
+            >
               <p className="display-font text-2xl font-semibold text-white">{founder.name}</p>
               <p className="mt-2 text-xs leading-5 text-[var(--muted)]">{founder.role}</p>
               <div className="mt-8 flex flex-col gap-3">
@@ -477,7 +519,7 @@ export function FounderContact({ founders }: { founders: Founder[] }) {
                   <Mail size={14} /> Email
                 </a>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
